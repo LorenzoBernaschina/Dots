@@ -37,16 +37,14 @@ public struct Button {
     public var width: CGFloat
     public var height: CGFloat
     public var cornerRadius: CGFloat
-    public var color: UIColor
     
-    init(title: String, x: CGFloat, y: CGFloat, size: CGFloat, color: UIColor) {
+    init(title: String, x: CGFloat, y: CGFloat, size: CGFloat) {
         self.title = title
         self.x = x
         self.y = y
         self.width = size
         self.height = size
         self.cornerRadius = size / 2
-        self.color = color
     }
 }
 
@@ -60,15 +58,34 @@ enum ButtonType {
     func get() -> Button {
         switch self {
         case .Easy:
-            return Button(title: "Easy", x: 10, y: 10, size: 100, color: .blue)
+            return Button(title: "Easy", x: 290, y: 150, size: 220)
         case .Medium:
-            return Button(title: "Medium", x: 10, y: 150, size: 100, color: .yellow)
+            return Button(title: "Medium", x: 90, y: 240, size: 190)
         case .Hard:
-            return Button(title: "Hard", x: 10, y: 290, size: 100, color: .red)
+            return Button(title: "Hard", x: 255, y: 380, size: 160)
         case .Dismiss:
-            return Button(title: "X", x: 0, y: 0, size: 30, color: .white)
+            return Button(title: "X", x: 30, y: 30, size: 50)
         case .Help:
-            return Button(title: "?", x: 0, y: 0, size: 30, color: .white)
+            return Button(title: "?", x: 0, y: 0, size: 30)
+        }
+    }
+}
+
+public struct Font {
+    public var name: String
+    
+    init(name: String) {
+        self.name = name
+    }
+}
+
+enum FontType {
+    case SanFrancisco
+    
+    func get() -> Font {
+        switch self {
+        case .SanFrancisco:
+            return Font(name: ".SFUIText-Bold")
         }
     }
 }
@@ -86,5 +103,9 @@ public class ViewObject {
     public let mediumButton = ButtonType.Medium.get()
     
     public let hardButton = ButtonType.Hard.get()
+    
+    public let dismissButton = ButtonType.Dismiss.get()
+    
+    public let sanFranciscoFont = FontType.SanFrancisco.get()
 }
 

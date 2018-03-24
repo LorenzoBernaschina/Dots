@@ -52,6 +52,9 @@ public class GamePalette: SKScene {
     private let thirdScaleColorizingDot = SKAction.scale(to: 1.0, duration: 0.2)
     private var scaleColorizingDotAnimation: SKAction?
     
+    // delegate
+    public weak var gamePaletteDelegate: GamePaletteDelegate?
+    
     override public func didMove(to view: SKView) {
         // manage animations
         self.selectionAnimationIn = SKAction.group([self.selectionZoomIn, self.selectionFadeAlphaIn])
@@ -140,6 +143,8 @@ public class GamePalette: SKScene {
                                                                    colorizingDotAnimation,
                                                                    fadeInColorizingDotAnimation])
                         self.animate(dot: overlaidDot, withAnimation: colorizeDotAnimation)
+                        
+                        self.gamePaletteDelegate?.dotDidMove(withNewColor: (overlaidDot as! Dot).dotColor)
                     }else {
                         self.selectedDot!.zPosition = 0.0
                         let moveToOriginalPosition = SKAction.move(to: (self.selectedDot as! Dot).originalPosition, duration: 0.25)

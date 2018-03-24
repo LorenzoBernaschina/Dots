@@ -3,11 +3,25 @@ import SpriteKit
 
 public class GameViewController: UIViewController {
     
-    var colorPalette: [RYBColor]
+    private var colorPalette = [RYBColor]()
+    
+    private let goalColor: RYBColor?
+    
+    private var palette: GamePalette?
 
     public init(colorPalette: [RYBColor]) {
-        self.colorPalette = colorPalette
-        super.init(nibName: nil, bundle: nil)
+        
+        for i in 0 ..< colorPalette.count {
+            let color = RYBColor(red: colorPalette[i].red, yellow: colorPalette[i].yellow, blue: colorPalette[i].blue)
+            self.colorPalette.append(color)
+        }
+        
+        self.goalColor = self.colorPalette.last
+        
+        self.palette = GamePalette(size: CGSize(width: ViewObject.shared.paletteView.width,
+                                                height: ViewObject.shared.paletteView.height))
+        
+        super.init(nibName: nil, bundle: nil)        
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -15,12 +29,27 @@ public class GameViewController: UIViewController {
     }
     
     override public func loadView() {
+        
         //UIView
         self.view = UIView(frame: CGRect(x: ViewObject.shared.gameView.x,
                                          y: ViewObject.shared.gameView.y,
                                          width: ViewObject.shared.gameView.width,
                                          height: ViewObject.shared.gameView.height))
         self.view.backgroundColor = (self.colorPalette.last)?.toRGBColor()
+        
+        // Dismiss button
+        let dismissButton = UIButton(type: .custom)
+        dismissButton.setTitle(ViewObject.shared.dismissButton.title, for: .normal)
+        dismissButton.setTitleColor(self.goalColor!.toRGBColor(), for: .normal)
+        dismissButton.frame = CGRect(x: ViewObject.shared.dismissButton.x,
+                                      y: ViewObject.shared.dismissButton.y,
+                                      width: ViewObject.shared.dismissButton.width,
+                                      height: ViewObject.shared.dismissButton.height)
+        dismissButton.layer.cornerRadius = ViewObject.shared.dismissButton.cornerRadius
+        dismissButton.backgroundColor = .white
+        dismissButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 20)
+        
+        dismissButton.addTarget(self, action: #selector(GameViewController.dismissViewController(sender:)), for: .touchUpInside)
         
         //SKView
         let paletteView = SKView(frame: CGRect(x: ViewObject.shared.paletteView.x,
@@ -31,14 +60,16 @@ public class GameViewController: UIViewController {
         paletteView.backgroundColor = ViewObject.shared.paletteView.backgroundColor
         
         //SKScene
-        let palette: GamePalette = GamePalette(size: CGSize(width: ViewObject.shared.paletteView.width,
-                                                            height: ViewObject.shared.paletteView.height))
-        palette.backgroundColor = ViewObject.shared.paletteView.backgroundColor
-        self.drawPalette(palette: palette)
+        if let palette = self.palette {
+            palette.gamePaletteDelegate = self
+            palette.backgroundColor = ViewObject.shared.paletteView.backgroundColor
+            self.drawPalette(palette: palette)
         
-        paletteView.presentScene(palette)
+            paletteView.presentScene(palette)
+        }
         
         self.view.addSubview(paletteView)
+        self.view.addSubview(dismissButton)
     }
     
     private func drawPalette(palette: GamePalette){
@@ -60,8 +91,22 @@ public class GameViewController: UIViewController {
                           color: self.colorPalette[i])
             palette.addChild(dot)
         }
-        
     }
     
+    @objc func dismissViewController(sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension GameViewController: GamePaletteDelegate {
+    public func dotDidMove(withNewColor color: RYBColor) {
+        if let goalColor = self.goalColor {
+            if (color.red == goalColor.red && color.yellow == goalColor.yellow && color.blue == goalColor.blue){
+                print("you won!!!")
+            }else if (self.palette!.children.count - 1 == 1) {
+                print("you lose")
+            }
+        }
+    }
 }
 

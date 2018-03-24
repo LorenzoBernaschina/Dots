@@ -5,11 +5,15 @@ import PlaygroundSupport
 
 class WelcomeViewController: UIViewController {
     
-    var easyGameColorPalette = [RYBColor]()
-    var mediumGameColorPalette = [RYBColor]()
-    var hardGameColorPalette = [RYBColor]()
+    private let circularTransition = CircularTransition(withDuration: 0.4)
+    private var currentTransitionStartingPoint: CGPoint = .zero
+    private var currentTransitionColor: UIColor = .clear
     
-    let gameDifficulty = DifficultyManager()
+    private var easyGameColorPalette = [RYBColor]()
+    private var mediumGameColorPalette = [RYBColor]()
+    private var hardGameColorPalette = [RYBColor]()
+    
+    private let gameDifficulty = DifficultyManager()
     
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -39,9 +43,9 @@ class WelcomeViewController: UIViewController {
                                       width: ViewObject.shared.easyButton.width,
                                       height: ViewObject.shared.easyButton.height)
         easyGameButton.layer.cornerRadius = ViewObject.shared.easyButton.cornerRadius
-        //TODO: rimuovere da ViewObject il parametro per il colore di sfondo dal momento che viene settato dinamicamente
         easyGameButton.backgroundColor = (self.easyGameColorPalette.last)?.toRGBColor()
-        easyGameButton.addTarget(self, action: #selector(WelcomeViewController.easyGameButtonPressed), for: .touchUpInside)
+        easyGameButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 50)
+        easyGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         
         
         let mediumGameButton = UIButton(type: .custom)
@@ -51,8 +55,9 @@ class WelcomeViewController: UIViewController {
                                         width: ViewObject.shared.mediumButton.width,
                                         height: ViewObject.shared.mediumButton.height)
         mediumGameButton.layer.cornerRadius = ViewObject.shared.mediumButton.cornerRadius
-        mediumGameButton.backgroundColor = ViewObject.shared.mediumButton.color
-        mediumGameButton.addTarget(self, action: #selector(WelcomeViewController.mediumGameButtonPressed), for: .touchUpInside)
+        mediumGameButton.backgroundColor = (self.mediumGameColorPalette.last)?.toRGBColor()
+        mediumGameButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 30)
+        mediumGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         
         
         let hardGameButton = UIButton(type: .custom)
@@ -62,29 +67,60 @@ class WelcomeViewController: UIViewController {
                                       width: ViewObject.shared.hardButton.width,
                                       height: ViewObject.shared.hardButton.height)
         hardGameButton.layer.cornerRadius = ViewObject.shared.hardButton.cornerRadius
-        hardGameButton.backgroundColor = ViewObject.shared.hardButton.color
-        hardGameButton.addTarget(self, action: #selector(WelcomeViewController.hardGameButtonPressed), for: .touchUpInside)
+        hardGameButton.backgroundColor = (self.hardGameColorPalette.last)?.toRGBColor()
+        hardGameButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 25)
+        hardGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         
         self.view.addSubview(easyGameButton)
         self.view.addSubview(mediumGameButton)
         self.view.addSubview(hardGameButton)
     }
     
-    @objc func easyGameButtonPressed() {
-        let gameViewController = GameViewController(colorPalette: self.easyGameColorPalette)
-        self.present(gameViewController, animated: true, completion: nil)
+    @objc func buttonPressed(sender: UIButton) {
+        var gameViewController: GameViewController?
+        
+        if let buttonTitle = sender.titleLabel?.text{
+            switch buttonTitle {
+            case ViewObject.shared.easyButton.title:
+                gameViewController = GameViewController(colorPalette: self.easyGameColorPalette)
+            case ViewObject.shared.mediumButton.title:
+                gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette)
+            case ViewObject.shared.hardButton.title:
+                gameViewController = GameViewController(colorPalette: self.hardGameColorPalette)
+            default:
+                break
+            }
+        }
+        
+        if let viewController = gameViewController {
+            viewController.transitioningDelegate = self
+            viewController.modalPresentationStyle = .custom
+            
+            self.circularTransition.transitionMode = .present
+            self.circularTransition.transitionStartingPoint = sender.center
+            self.circularTransition.transitionColor = sender.backgroundColor!
+            
+            self.currentTransitionStartingPoint = self.circularTransition.transitionStartingPoint
+            self.currentTransitionColor = self.circularTransition.transitionColor
+            
+            self.present(viewController, animated: true, completion: nil)
+        }
+    }
+}
+
+extension WelcomeViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        return self.circularTransition
     }
     
-    @objc func mediumGameButtonPressed() {
-        let gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette)
-        self.present(gameViewController, animated: true, completion: nil)
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.circularTransition.transitionMode = .dismiss
+        self.circularTransition.transitionStartingPoint = self.currentTransitionStartingPoint
+        self.circularTransition.transitionColor = self.currentTransitionColor
+        
+        return self.circularTransition
     }
-    
-    @objc func hardGameButtonPressed() {
-        let gameViewController = GameViewController(colorPalette: self.hardGameColorPalette)
-        self.present(gameViewController, animated: true, completion: nil)
-    }
-    
 }
 
 //Playground setup
