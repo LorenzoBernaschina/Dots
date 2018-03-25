@@ -1,5 +1,9 @@
 import SpriteKit
 
+public protocol GamePaletteDelegate: class {
+    func dotDidMove(withNewColor color: RYBColor)
+}
+
 public class GamePalette: SKScene {
     
     override public init(size: CGSize) {

@@ -32,15 +32,14 @@ extension Difficulty {
     public func isInvalidGoalColor(goalColor: RYBColor?, forPalette palette: [RYBColor]) -> Bool {
         guard goalColor != nil else { return true }
         
-        // white color
+        // exclude white color
         if goalColor!.red == 1.0 && goalColor!.yellow == 1.0 && goalColor!.blue == 1.0 {
             return true
         }
         
+        // exclude too similar color with the palette
         for color in palette {
-            if (color.red == goalColor!.red && color.yellow == goalColor!.yellow && color.blue == goalColor!.blue) {
-                return true
-            }else if (abs(color.red - goalColor!.red) <= 0.25 && abs(color.yellow - goalColor!.yellow) <= 0.25 && abs(color.blue - goalColor!.blue) <= 0.25){
+            if (abs(color.red - goalColor!.red) <= 0.2 && abs(color.yellow - goalColor!.yellow) <= 0.2 && abs(color.blue - goalColor!.blue) <= 0.2){
                 return true
             }
         }

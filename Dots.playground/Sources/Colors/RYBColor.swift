@@ -27,6 +27,14 @@ public class RYBColor: ColorConverter {
         self.blue = blue
     }
     
+    /** This method converts from a RGB color to the instance's color system that calls it.
+     
+     - parameters:
+     - color: The RGB color to be converted.
+     
+     - throws: An error of type 'RGBColorError'
+     
+     */
     public func fromRGBColor(color: UIColor) throws {
         
         guard color.rgbColorComponent?.red != nil else {
@@ -101,7 +109,10 @@ public class RYBColor: ColorConverter {
 
     }
  
-    
+    /**
+     This method converts from the instance's color system that calls it to a RGB color
+     - returns: A new RGB color
+     */
     public func toRGBColor() -> UIColor {
         var red = self.red
         var yellow = self.yellow
@@ -160,7 +171,6 @@ public class RYBColor: ColorConverter {
         self.red = newRed
         self.yellow = newYellow
         self.blue = newBlue
-        
     }
 }
 
