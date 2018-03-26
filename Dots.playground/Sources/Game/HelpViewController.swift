@@ -18,7 +18,12 @@ public class HelpViewController: UIViewController {
                                          y: ViewObject.shared.gameView.y,
                                          width: ViewObject.shared.gameView.width,
                                          height: ViewObject.shared.gameView.height))
-        self.view.backgroundColor = .white
+        
+        let background = UIImageView(frame: CGRect(x: ViewObject.shared.gameView.x,
+                                            y: ViewObject.shared.gameView.y,
+                                            width: ViewObject.shared.gameView.width,
+                                            height: ViewObject.shared.gameView.height))
+        background.image = UIImage(named: "HelpBackground.jpg")
         
         // Dismiss button
         self.dismissButton.setTitle(ViewObject.shared.dismissButton.title, for: .normal)
@@ -32,6 +37,7 @@ public class HelpViewController: UIViewController {
         self.dismissButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 20)
         self.dismissButton.addTarget(self, action: #selector(HelpViewController.dismissViewController(sender:)), for: .touchUpInside)
         
+        self.view.addSubview(background)
         self.view.addSubview(self.dismissButton)
     }
     

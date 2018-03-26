@@ -36,8 +36,12 @@ class WelcomeViewController: UIViewController {
                                          y: ViewObject.shared.gameView.y,
                                          width: ViewObject.shared.gameView.width,
                                          height: ViewObject.shared.gameView.height))
-        self.view.backgroundColor = ViewObject.shared.gameView.backgroundColor
         
+        let background = UIImageView(frame: CGRect(x: ViewObject.shared.gameView.x,
+                                                   y: ViewObject.shared.gameView.y,
+                                                   width: ViewObject.shared.gameView.width,
+                                                   height: ViewObject.shared.gameView.height))
+        background.image = UIImage(named: "HomeBackground.jpg")
         
         self.easyGameButton.setTitle(ViewObject.shared.easyButton.title, for: .normal)
         self.easyGameButton.frame = CGRect(x: ViewObject.shared.easyButton.x,
@@ -75,7 +79,7 @@ class WelcomeViewController: UIViewController {
         self.hardGameButton.jumpAnimation(withDuration: 2.0, damping: 0.2, initialVelocity: 4.0)
         
         
-        self.resetGameButton.setTitle(ViewObject.shared.resetButton.title, for: .normal)
+        self.resetGameButton.setImage(UIImage(named: ViewObject.shared.resetButton.title), for: .normal)
         self.resetGameButton.frame = CGRect(x: ViewObject.shared.resetButton.x,
                                             y: ViewObject.shared.resetButton.y,
                                             width: ViewObject.shared.resetButton.width,
@@ -86,6 +90,7 @@ class WelcomeViewController: UIViewController {
         self.resetGameButton.addTarget(self, action: #selector(WelcomeViewController.resetGame(sender:)), for: .touchUpInside)
         self.resetGameButton.jumpAnimation(withDuration: 2.0, damping: 0.2, initialVelocity: 4.0)
         
+        self.view.addSubview(background)
         self.view.addSubview(self.easyGameButton)
         self.view.addSubview(self.mediumGameButton)
         self.view.addSubview(self.hardGameButton)

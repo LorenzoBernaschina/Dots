@@ -65,7 +65,7 @@ enum ButtonType {
         case .Hard:
             return Button(title: "Hard", x: 255, y: 330, size: 160)
         case .Reset:
-            return Button(title: "r", x: 520, y: 520, size: 50)
+            return Button(title: "RefreshIcon.png", x: 520, y: 520, size: 50)
         case .Dismiss:
             return Button(title: "X", x: 30, y: 30, size: 50)
         case .Help:
