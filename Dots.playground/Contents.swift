@@ -30,63 +30,69 @@ class WelcomeViewController: UIViewController {
     
     override func loadView() {
         
-        self.setGameColorPalette()
+        self.setGame()
         
-        self.view = UIView(frame: CGRect(x: ViewObject.shared.gameView.x,
-                                         y: ViewObject.shared.gameView.y,
-                                         width: ViewObject.shared.gameView.width,
-                                         height: ViewObject.shared.gameView.height))
+        self.view = UIView(frame: CGRect(x: ConstantValues.shared.gameView.x,
+                                         y: ConstantValues.shared.gameView.y,
+                                         width: ConstantValues.shared.gameView.width,
+                                         height: ConstantValues.shared.gameView.height))
         
-        let background = UIImageView(frame: CGRect(x: ViewObject.shared.gameView.x,
-                                                   y: ViewObject.shared.gameView.y,
-                                                   width: ViewObject.shared.gameView.width,
-                                                   height: ViewObject.shared.gameView.height))
+        let background = UIImageView(frame: CGRect(x: ConstantValues.shared.gameView.x,
+                                                   y: ConstantValues.shared.gameView.y,
+                                                   width: ConstantValues.shared.gameView.width,
+                                                   height: ConstantValues.shared.gameView.height))
         background.image = UIImage(named: "HomeBackground.jpg")
         
-        self.easyGameButton.setTitle(ViewObject.shared.easyButton.title, for: .normal)
-        self.easyGameButton.frame = CGRect(x: ViewObject.shared.easyButton.x,
-                                      y: ViewObject.shared.easyButton.y,
-                                      width: ViewObject.shared.easyButton.width,
-                                      height: ViewObject.shared.easyButton.height)
-        self.easyGameButton.layer.cornerRadius = ViewObject.shared.easyButton.cornerRadius
+        self.easyGameButton.setTitle(ConstantValues.shared.easyButton.title, for: .normal)
+        self.easyGameButton.tag = 0
+        self.easyGameButton.frame = CGRect(x: ConstantValues.shared.easyButton.x,
+                                      y: ConstantValues.shared.easyButton.y,
+                                      width: ConstantValues.shared.easyButton.width,
+                                      height: ConstantValues.shared.easyButton.height)
+        self.easyGameButton.titleLabel?.textAlignment = .center
+        self.easyGameButton.layer.cornerRadius = ConstantValues.shared.easyButton.cornerRadius
         self.easyGameButton.backgroundColor = (self.easyGameColorPalette.last)?.toRGBColor()
-        self.easyGameButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 50)
+        self.easyGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 50)
         self.easyGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         self.easyGameButton.jumpAnimation(withDuration: 2.0, damping: 0.4, initialVelocity: 4.0)
         
         
-        self.mediumGameButton.setTitle(ViewObject.shared.mediumButton.title, for: .normal)
-        self.mediumGameButton.frame = CGRect(x: ViewObject.shared.mediumButton.x,
-                                        y: ViewObject.shared.mediumButton.y,
-                                        width: ViewObject.shared.mediumButton.width,
-                                        height: ViewObject.shared.mediumButton.height)
-        self.mediumGameButton.layer.cornerRadius = ViewObject.shared.mediumButton.cornerRadius
+        self.mediumGameButton.setTitle(ConstantValues.shared.mediumButton.title, for: .normal)
+        self.mediumGameButton.tag = 1
+        self.mediumGameButton.frame = CGRect(x: ConstantValues.shared.mediumButton.x,
+                                        y: ConstantValues.shared.mediumButton.y,
+                                        width: ConstantValues.shared.mediumButton.width,
+                                        height: ConstantValues.shared.mediumButton.height)
+        self.mediumGameButton.titleLabel?.textAlignment = .center
+        self.mediumGameButton.layer.cornerRadius = ConstantValues.shared.mediumButton.cornerRadius
         self.mediumGameButton.backgroundColor = (self.mediumGameColorPalette.last)?.toRGBColor()
-        self.mediumGameButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 30)
+        self.mediumGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 30)
         self.mediumGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         self.mediumGameButton.jumpAnimation(withDuration: 2.0, damping: 0.3, initialVelocity: 4.0)
         
     
-        self.hardGameButton.setTitle(ViewObject.shared.hardButton.title, for: .normal)
-        self.hardGameButton.frame = CGRect(x: ViewObject.shared.hardButton.x,
-                                      y: ViewObject.shared.hardButton.y,
-                                      width: ViewObject.shared.hardButton.width,
-                                      height: ViewObject.shared.hardButton.height)
-        self.hardGameButton.layer.cornerRadius = ViewObject.shared.hardButton.cornerRadius
+        self.hardGameButton.setTitle(ConstantValues.shared.hardButton.title, for: .normal)
+        self.hardGameButton.tag = 2
+        self.hardGameButton.frame = CGRect(x: ConstantValues.shared.hardButton.x,
+                                      y: ConstantValues.shared.hardButton.y,
+                                      width: ConstantValues.shared.hardButton.width,
+                                      height: ConstantValues.shared.hardButton.height)
+        self.hardGameButton.titleLabel?.textAlignment = .center
+        self.hardGameButton.layer.cornerRadius = ConstantValues.shared.hardButton.cornerRadius
         self.hardGameButton.backgroundColor = (self.hardGameColorPalette.last)?.toRGBColor()
-        self.hardGameButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 25)
+        self.hardGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 25)
         self.hardGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         self.hardGameButton.jumpAnimation(withDuration: 2.0, damping: 0.2, initialVelocity: 4.0)
         
         
-        self.resetGameButton.setImage(UIImage(named: ViewObject.shared.resetButton.title), for: .normal)
-        self.resetGameButton.frame = CGRect(x: ViewObject.shared.resetButton.x,
-                                            y: ViewObject.shared.resetButton.y,
-                                            width: ViewObject.shared.resetButton.width,
-                                            height: ViewObject.shared.resetButton.height)
-        self.resetGameButton.layer.cornerRadius = ViewObject.shared.resetButton.cornerRadius
+        self.resetGameButton.setImage(UIImage(named: ConstantValues.shared.resetButton.title), for: .normal)
+        self.resetGameButton.frame = CGRect(x: ConstantValues.shared.resetButton.x,
+                                            y: ConstantValues.shared.resetButton.y,
+                                            width: ConstantValues.shared.resetButton.width,
+                                            height: ConstantValues.shared.resetButton.height)
+        self.resetGameButton.layer.cornerRadius = ConstantValues.shared.resetButton.cornerRadius
         self.resetGameButton.backgroundColor = .black
-        self.resetGameButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 25)
+        self.resetGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 25)
         self.resetGameButton.addTarget(self, action: #selector(WelcomeViewController.resetGame(sender:)), for: .touchUpInside)
         self.resetGameButton.jumpAnimation(withDuration: 2.0, damping: 0.2, initialVelocity: 4.0)
         
@@ -98,17 +104,21 @@ class WelcomeViewController: UIViewController {
     }
     
     @objc func resetGame(sender: UIButton) {
-        self.setGameColorPalette()
-        self.resetButtons()
+        self.setGame()
+        self.setButtons()
     }
     
-    private func setGameColorPalette() {
-        self.easyGameColorPalette = self.gameDifficulty.setGameColorPalette(withDifficultyLevel: Easy())
-        self.mediumGameColorPalette = self.gameDifficulty.setGameColorPalette(withDifficultyLevel: Medium())
-        self.hardGameColorPalette = self.gameDifficulty.setGameColorPalette(withDifficultyLevel: Hard())
+    private func setGame() {
+        self.easyGameColorPalette = self.gameDifficulty.setGame(withDifficultyLevel: Easy())
+        self.mediumGameColorPalette = self.gameDifficulty.setGame(withDifficultyLevel: Medium())
+        self.hardGameColorPalette = self.gameDifficulty.setGame(withDifficultyLevel: Hard())
     }
     
-    private func resetButtons() {
+    private func setButtons() {
+        self.easyGameButton.setTitle(ConstantValues.shared.easyButton.title, for: .normal)
+        self.mediumGameButton.setTitle(ConstantValues.shared.mediumButton.title, for: .normal)
+        self.hardGameButton.setTitle(ConstantValues.shared.hardButton.title, for: .normal)
+        
         self.easyGameButton.backgroundColor = (self.easyGameColorPalette.last)?.toRGBColor()
         self.mediumGameButton.backgroundColor = (self.mediumGameColorPalette.last)?.toRGBColor()
         self.hardGameButton.backgroundColor = (self.hardGameColorPalette.last)?.toRGBColor()
@@ -121,20 +131,20 @@ class WelcomeViewController: UIViewController {
     @objc func buttonPressed(sender: UIButton) {
         var gameViewController: GameViewController?
         
-        if let buttonTitle = sender.titleLabel?.text{
-            switch buttonTitle {
-            case ViewObject.shared.easyButton.title:
-                gameViewController = GameViewController(colorPalette: self.easyGameColorPalette)
-            case ViewObject.shared.mediumButton.title:
-                gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette)
-            case ViewObject.shared.hardButton.title:
-                gameViewController = GameViewController(colorPalette: self.hardGameColorPalette)
-            default:
-                break
-            }
-        }
+        switch sender.tag {
+        case 0:
+            gameViewController = GameViewController(colorPalette: self.easyGameColorPalette)
+        case 1:
+            gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette)
+        case 2:
+            gameViewController = GameViewController(colorPalette: self.hardGameColorPalette)
+        default:
+            break
+            
+    }
         
         if let viewController = gameViewController {
+            viewController.gameViewControllerDelegate = self
             viewController.transitioningDelegate = self
             viewController.modalPresentationStyle = .custom
             
@@ -166,7 +176,21 @@ extension WelcomeViewController: UIViewControllerTransitioningDelegate {
     }
 }
 
-extension UIButton {
+extension WelcomeViewController: GameViewControllerDelegate {
+    public func gameEnded(withStatus status: GameStatus) {
+        self.currentButtonPressed.titleLabel?.adjustsFontSizeToFitWidth = true
+        self.currentButtonPressed.titleLabel?.minimumScaleFactor = 0.5
+        self.currentButtonPressed.titleLabel?.numberOfLines = 1
+        switch status {
+        case .Win:
+            self.currentButtonPressed.setTitle("You win!", for: .normal)
+        case .Lose:
+            self.currentButtonPressed.setTitle("Try again", for: .normal)
+        }
+    }
+}
+
+extension UIView {
     public func jumpAnimation(withDuration duration: TimeInterval, damping: CGFloat, initialVelocity: CGFloat) {
         self.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
         UIView.animate(withDuration: duration,

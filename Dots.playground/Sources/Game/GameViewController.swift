@@ -1,9 +1,20 @@
 import UIKit
 import SpriteKit
 
+public enum GameStatus {
+    case Win
+    case Lose
+}
+
+public protocol GameViewControllerDelegate: class {
+    func gameEnded(withStatus status: GameStatus)
+}
+
 public class GameViewController: UIViewController {
     
     private var colorPalette = [RYBColor]()
+    
+    private var suggestionPalette = [RYBColor]()
     
     private let goalColor: RYBColor?
     
@@ -12,18 +23,29 @@ public class GameViewController: UIViewController {
     private let circularTransition = CircularTransition(withDuration: 0.4)
     
     private let dismissButton = UIButton(type: .custom)
+    
     private let helpButton = UIButton(type: .custom)
-
+    
+    private var suggestionTimer: Timer?
+    private let suggestionTime: TimeInterval = 5.0
+    
+    public weak var gameViewControllerDelegate: GameViewControllerDelegate?
+    
     public init(colorPalette: [RYBColor]) {
         for i in 0 ..< colorPalette.count {
             let color = RYBColor(red: colorPalette[i].red, yellow: colorPalette[i].yellow, blue: colorPalette[i].blue)
-            self.colorPalette.append(color)
+            
+            if i < 9 || i == colorPalette.count - 1 {
+                self.colorPalette.append(color)
+            }else {
+                self.suggestionPalette.append(color)
+            }
         }
         
         self.goalColor = self.colorPalette.last
         
-        self.palette = GamePalette(size: CGSize(width: ViewObject.shared.paletteView.width,
-                                                height: ViewObject.shared.paletteView.height))
+        self.palette = GamePalette(size: CGSize(width: ConstantValues.shared.paletteView.width,
+                                                height: ConstantValues.shared.paletteView.height))
 
         super.init(nibName: nil, bundle: nil)
     
@@ -36,49 +58,49 @@ public class GameViewController: UIViewController {
     
     override public func loadView() {
         //UIView
-        self.view = UIView(frame: CGRect(x: ViewObject.shared.gameView.x,
-                                         y: ViewObject.shared.gameView.y,
-                                         width: ViewObject.shared.gameView.width,
-                                         height: ViewObject.shared.gameView.height))
+        self.view = UIView(frame: CGRect(x: ConstantValues.shared.gameView.x,
+                                         y: ConstantValues.shared.gameView.y,
+                                         width: ConstantValues.shared.gameView.width,
+                                         height: ConstantValues.shared.gameView.height))
         self.view.backgroundColor = (self.colorPalette.last)?.toRGBColor()
         
         // Dismiss button
-        self.dismissButton.setTitle(ViewObject.shared.dismissButton.title, for: .normal)
+        self.dismissButton.setTitle(ConstantValues.shared.dismissButton.title, for: .normal)
         self.dismissButton.setTitleColor(self.goalColor!.toRGBColor(), for: .normal)
-        self.dismissButton.frame = CGRect(x: ViewObject.shared.dismissButton.x,
-                                      y: ViewObject.shared.dismissButton.y,
-                                      width: ViewObject.shared.dismissButton.width,
-                                      height: ViewObject.shared.dismissButton.height)
-        self.dismissButton.layer.cornerRadius = ViewObject.shared.dismissButton.cornerRadius
+        self.dismissButton.frame = CGRect(x: ConstantValues.shared.dismissButton.x,
+                                      y: ConstantValues.shared.dismissButton.y,
+                                      width: ConstantValues.shared.dismissButton.width,
+                                      height: ConstantValues.shared.dismissButton.height)
+        self.dismissButton.layer.cornerRadius = ConstantValues.shared.dismissButton.cornerRadius
         self.dismissButton.backgroundColor = .white
-        self.dismissButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 20)
+        self.dismissButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 20)
         self.dismissButton.addTarget(self, action: #selector(GameViewController.dismissViewController(sender:)), for: .touchUpInside)
         
         // Help button
-        self.helpButton.setTitle(ViewObject.shared.helpButton.title, for: .normal)
+        self.helpButton.setTitle(ConstantValues.shared.helpButton.title, for: .normal)
         self.helpButton.setTitleColor(self.goalColor!.toRGBColor(), for: .normal)
-        self.helpButton.frame = CGRect(x: ViewObject.shared.helpButton.x,
-                                     y: ViewObject.shared.helpButton.y,
-                                     width: ViewObject.shared.helpButton.width,
-                                     height: ViewObject.shared.helpButton.height)
-        self.helpButton.layer.cornerRadius = ViewObject.shared.helpButton.cornerRadius
+        self.helpButton.frame = CGRect(x: ConstantValues.shared.helpButton.x,
+                                     y: ConstantValues.shared.helpButton.y,
+                                     width: ConstantValues.shared.helpButton.width,
+                                     height: ConstantValues.shared.helpButton.height)
+        self.helpButton.layer.cornerRadius = ConstantValues.shared.helpButton.cornerRadius
         self.helpButton.backgroundColor = .white
-        self.helpButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 20)
+        self.helpButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 20)
         self.helpButton.addTarget(self, action: #selector(GameViewController.showHelp(sender:)), for: .touchUpInside)
         
         
         //SKView
-        let paletteView = SKView(frame: CGRect(x: ViewObject.shared.paletteView.x,
-                                               y: ViewObject.shared.paletteView.y,
-                                               width: ViewObject.shared.paletteView.width,
-                                               height: ViewObject.shared.paletteView.height))
+        let paletteView = SKView(frame: CGRect(x: ConstantValues.shared.paletteView.x,
+                                               y: ConstantValues.shared.paletteView.y,
+                                               width: ConstantValues.shared.paletteView.width,
+                                               height: ConstantValues.shared.paletteView.height))
         paletteView.ignoresSiblingOrder = true
-        paletteView.backgroundColor = ViewObject.shared.paletteView.backgroundColor
+        paletteView.backgroundColor = ConstantValues.shared.paletteView.backgroundColor
         
         //SKScene
         if let palette = self.palette {
             palette.gamePaletteDelegate = self
-            palette.backgroundColor = ViewObject.shared.paletteView.backgroundColor
+            palette.backgroundColor = ConstantValues.shared.paletteView.backgroundColor
             self.drawPalette(palette: palette)
         
             paletteView.presentScene(palette)
@@ -87,7 +109,24 @@ public class GameViewController: UIViewController {
         self.view.addSubview(paletteView)
         self.view.addSubview(dismissButton)
         self.view.addSubview(helpButton)
- 
+        
+        // set the event suggestion
+        self.suggestionTimer = Timer.scheduledTimer(timeInterval: self.suggestionTime,
+                                                    target: self,
+                                                    selector: #selector(GameViewController.showSuggestion(sender:)),
+                                                    userInfo: nil,
+                                                    repeats: true)
+    }
+    
+    @objc func showSuggestion(sender: Timer) {
+        if (self.suggestionPalette.count > 1) {
+            // if the user is not on the right path, don't provide suggestions anymore
+            if !self.palette!.nextMoveSuggestion(forColor: self.suggestionPalette[0], and: self.suggestionPalette[1]) {
+                self.stopTimer()
+            }
+        }else {
+            self.stopTimer()
+        }
     }
     
     private func drawPalette(palette: GamePalette){
@@ -101,7 +140,7 @@ public class GameViewController: UIViewController {
         let xOffset = marginSpace + xPosition + radius
         let yOffset = marginSpace + yPosition + radius
         
-        for i in 0 ..< self.colorPalette.count - 1  {
+        for i in 0 ..< 9  {
             let dot = Dot(radius: radius,
                           position: CGPoint(x: (dotCell * CGFloat(i % 3)) + xOffset,
                                             y: (dotCell * CGFloat(i / 3)) + yOffset),
@@ -110,8 +149,20 @@ public class GameViewController: UIViewController {
         }
     }
     
-    @objc func dismissViewController(sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+    private func resetTimer() {
+        if let suggestionTimer = self.suggestionTimer {
+            if suggestionTimer.isValid {
+                suggestionTimer.fireDate = Date(timeIntervalSinceNow: self.suggestionTime)
+            }
+        }
+    }
+    
+    private func stopTimer() {
+        if let suggestionTimer = self.suggestionTimer {
+            if suggestionTimer.isValid {
+                suggestionTimer.invalidate()
+            }
+        }
     }
     
     @objc func showHelp(sender: UIButton) {
@@ -119,6 +170,11 @@ public class GameViewController: UIViewController {
         helpViewController.transitioningDelegate = self
         helpViewController.modalPresentationStyle = .custom
         self.present(helpViewController, animated: true, completion: nil)
+    }
+    
+    @objc func dismissViewController(sender: UIButton) {
+        self.stopTimer()
+        self.dismiss(animated: true, completion: nil)
     }
  
 }
@@ -144,12 +200,30 @@ extension GameViewController: UIViewControllerTransitioningDelegate {
 }
 
 extension GameViewController: GamePaletteDelegate {
-    public func dotDidMove(withNewColor color: RYBColor) {
+    public func dotDidMove(withNewDot dot: SKNode) {
+        let color = (dot as! Dot).dotColor
+        
+        // check if goal color is reached
         if let goalColor = self.goalColor {
             if (color.red == goalColor.red && color.yellow == goalColor.yellow && color.blue == goalColor.blue){
-                print("you won!!!")
+                self.stopTimer()
+                self.dismiss(animated: true, completion: {
+                    self.gameViewControllerDelegate?.gameEnded(withStatus: .Win)
+                })
             }else if (self.palette!.children.count - 1 == 1) {
-                print("you lose")
+                self.stopTimer()
+                self.dismiss(animated: true, completion: {
+                    self.gameViewControllerDelegate?.gameEnded(withStatus: .Lose)
+                })
+            }
+        }
+        
+        // if the suggestion timer is valid, this means that the user is still on the right path to get the solution
+        if (self.suggestionPalette.count > 1 && self.suggestionTimer!.isValid) {
+            self.suggestionPalette[0].mix(withColor: self.suggestionPalette[1])
+            if (color.red == self.suggestionPalette[0].red && color.yellow == self.suggestionPalette[0].yellow && color.blue == self.suggestionPalette[0].blue) {
+                self.suggestionPalette.remove(at: 1)
+                self.resetTimer()
             }
         }
     }

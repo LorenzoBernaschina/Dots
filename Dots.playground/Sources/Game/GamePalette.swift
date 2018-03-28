@@ -1,7 +1,13 @@
 import SpriteKit
 
 public protocol GamePaletteDelegate: class {
-    func dotDidMove(withNewColor color: RYBColor)
+    /**
+     This method is called every time the user mix two colors during the game combining two nodes together.
+     
+     - parameters:
+        - dot:
+    */
+    func dotDidMove(withNewDot dot: SKNode)
 }
 
 public class GamePalette: SKScene {
@@ -27,50 +33,75 @@ public class GamePalette: SKScene {
     // To manage the overlaid dot
     private var overlaidDot: SKNode?
     
+    
     // Dots animations
     private let selectionZoomIn = SKAction.scale(to: 1.1, duration: 0.25)
-    private let selectionFadeAlphaIn = SKAction.fadeAlpha(to: 0.8, duration: 0.25)
-    private var selectionAnimationIn: SKAction?
+    private let selectionFadeAlpha = SKAction.fadeAlpha(to: 0.8, duration: 0.25)
+    private var selectionAnimation: SKAction?
     
-    private let selectionZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
-    private let selectionFadeAlphaOut = SKAction.fadeIn(withDuration: 0.25)
-    private var selectionAnimationOut: SKAction?
+    private let deselectionZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
+    private let deselectionFadeAlpha = SKAction.fadeIn(withDuration: 0.25)
+    private var deselectionAnimation: SKAction?
     
     private let overlayZoomIn = SKAction.scale(to: 1.3, duration: 0.25)
-    private let overlayFadeAlphaIn = SKAction.fadeAlpha(to: 0.6, duration: 0.25)
-    private var overlayAnimationIn: SKAction?
+    private let overlayFadeAlpha = SKAction.fadeAlpha(to: 0.6, duration: 0.25)
+    private var overlayAnimation: SKAction?
     
-    private let overlayZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
-    private let overlayFadeAlphaOut = SKAction.fadeIn(withDuration: 0.25)
-    private var overlayAnimationOut: SKAction?
-    
+    private let notOverlayZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
+    private let notOverlayFadeAlpha = SKAction.fadeIn(withDuration: 0.25)
+    private var notOverlayAnimation: SKAction?
     
     // Mix colors animations
-    private let scaleRemovingDot = SKAction.scale(to: 0.0, duration: 0.25)
-    private let fadeOutRemovingDot = SKAction.fadeOut(withDuration: 0.25)
-    private let removeDot = SKAction.removeFromParent()
+    private let removingDotScale = SKAction.scale(to: 0.0, duration: 0.25)
+    private let removingDotFadeOut = SKAction.fadeOut(withDuration: 0.25)
+    private let removingDotFromParent = SKAction.removeFromParent()
     private var removeDotAnimation: SKAction?
     
-    private let firstScaleColorizingDot = SKAction.scale(to: 0.8, duration: 0.2)
-    private let secondScaleColorizingDot = SKAction.scale(to: 1.1, duration: 0.2)
-    private let thirdScaleColorizingDot = SKAction.scale(to: 1.0, duration: 0.2)
-    private var scaleColorizingDotAnimation: SKAction?
+    private let colorizingDotFirstScale = SKAction.scale(to: 0.8, duration: 0.2)
+    private let colorizingDotSecondScale = SKAction.scale(to: 1.1, duration: 0.2)
+    private let colorizingDotThirdScale = SKAction.scale(to: 1.0, duration: 0.2)
+    private var colorizingDotAnimationScale: SKAction?
+    
+    // Suggestion animation
+    private let suggestionZoomIn = SKAction.scale(to: 1.2, duration: 0.25)
+    private let suggestionFadeAlphaOut = SKAction.fadeAlpha(to: 0.8, duration: 0.25)
+    //private let suggestionWait = SKAction.wait(forDuration: 0.25)
+    private let suggestionFadeAlphaIn = SKAction.fadeIn(withDuration: 0.25)
+    private let suggestionZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
+    private var suggestionAnimation: SKAction?
     
     // delegate
     public weak var gamePaletteDelegate: GamePaletteDelegate?
     
     override public func didMove(to view: SKView) {
         // manage animations
-        self.selectionAnimationIn = SKAction.group([self.selectionZoomIn, self.selectionFadeAlphaIn])
-        self.selectionAnimationOut = SKAction.group([self.selectionZoomOut, self.selectionFadeAlphaOut])
-        self.overlayAnimationIn = SKAction.group([self.overlayZoomIn, self.overlayFadeAlphaIn])
-        self.overlayAnimationOut = SKAction.group([self.overlayZoomOut, self.overlayFadeAlphaOut])
+        self.selectionAnimation = SKAction.group([self.selectionZoomIn,
+                                                  self.selectionFadeAlpha])
         
-        let removingDotAnimation = SKAction.group([self.scaleRemovingDot, self.fadeOutRemovingDot])
-        self.removeDotAnimation = SKAction.sequence([removingDotAnimation, self.removeDot])
+        self.deselectionAnimation = SKAction.group([self.deselectionZoomOut,
+                                                    self.deselectionFadeAlpha])
         
-        self.scaleColorizingDotAnimation = SKAction.sequence([self.firstScaleColorizingDot, self.secondScaleColorizingDot, self.thirdScaleColorizingDot])
+        self.overlayAnimation = SKAction.group([self.overlayZoomIn,
+                                                self.overlayFadeAlpha])
         
+        self.notOverlayAnimation = SKAction.group([self.notOverlayZoomOut,
+                                                   self.notOverlayFadeAlpha])
+        
+        let removingDotAnimation = SKAction.group([self.removingDotScale,
+                                                   self.removingDotFadeOut])
+        self.removeDotAnimation = SKAction.sequence([removingDotAnimation,
+                                                     self.removingDotFromParent])
+        
+        self.colorizingDotAnimationScale = SKAction.sequence([self.colorizingDotFirstScale,
+                                                              self.colorizingDotSecondScale,
+                                                              self.colorizingDotThirdScale])
+        
+        let suggestionFirstAnimation = SKAction.group([self.suggestionZoomIn,
+                                                       self.suggestionFadeAlphaOut])
+        let suggestionSecondAnimation = SKAction.group([self.suggestionFadeAlphaIn,
+                                                        self.suggestionZoomOut])
+        self.suggestionAnimation = SKAction.sequence([suggestionFirstAnimation,
+                                                      suggestionSecondAnimation])
     }
     
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -85,7 +116,7 @@ public class GamePalette: SKScene {
             // check if the touch is inside a dot
             if self.selectedDot!.isKind(of: Dot.self){
                 
-                self.selectedDot!.run(self.selectionAnimationIn!)
+                self.selectedDot!.run(self.selectionAnimation!)
                 
                 self.selectedDot!.zPosition = 1.0
                 
@@ -113,12 +144,12 @@ public class GamePalette: SKScene {
                     for dot in dots {
                         if let overlaidDot = self.overlaidDot {
                             if dots.count == 1 {
-                                self.animate(dot: overlaidDot, withAnimation: self.overlayAnimationOut)
+                                self.animate(dot: overlaidDot, withAnimation: self.notOverlayAnimation)
                                 self.overlaidDot = nil
                             }
                         }else if dot != self.selectedDot {
                             self.overlaidDot = dot
-                            self.animate(dot: self.overlaidDot, withAnimation: self.overlayAnimationIn)
+                            self.animate(dot: self.overlaidDot, withAnimation: self.overlayAnimation)
                         }
                     }
                 }
@@ -139,20 +170,23 @@ public class GamePalette: SKScene {
                         (overlaidDot as! Dot).dotColor.mix(withColor: (self.selectedDot as! Dot).dotColor)
                         // #3 animate the overlaid dot
                         let newColor = (overlaidDot as! Dot).dotColor.toRGBColor()
-                        let colorizingDotAnimation = SKAction.colorize(with: newColor,
+                        
+                        
+                        let colorizingDotAnimationColor = SKAction.colorize(with: newColor,
                                                                        colorBlendFactor: 1.0,
                                                                        duration: 0.4)
-                        let fadeInColorizingDotAnimation = SKAction.fadeIn(withDuration: 0.1)
-                        let colorizeDotAnimation = SKAction.group([self.scaleColorizingDotAnimation!,
-                                                                   colorizingDotAnimation,
-                                                                   fadeInColorizingDotAnimation])
+                        let colorizingDotAnimationFadeIn = SKAction.fadeIn(withDuration: 0.1)
+                        let colorizeDotAnimation = SKAction.group([self.colorizingDotAnimationScale!,
+                                                                   colorizingDotAnimationColor,
+                                                                   colorizingDotAnimationFadeIn])
                         self.animate(dot: overlaidDot, withAnimation: colorizeDotAnimation)
                         
-                        self.gamePaletteDelegate?.dotDidMove(withNewColor: (overlaidDot as! Dot).dotColor)
+                        // delegate method
+                        self.gamePaletteDelegate?.dotDidMove(withNewDot: overlaidDot)
                     }else {
                         self.selectedDot!.zPosition = 0.0
                         let moveToOriginalPosition = SKAction.move(to: (self.selectedDot as! Dot).originalPosition, duration: 0.25)
-                        let moveToOriginalPositionAnimation = SKAction.group([self.selectionAnimationOut!, moveToOriginalPosition])
+                        let moveToOriginalPositionAnimation = SKAction.group([self.deselectionAnimation!, moveToOriginalPosition])
                         self.animate(dot: self.selectedDot, withAnimation: moveToOriginalPositionAnimation)
                     }
                     
@@ -163,6 +197,40 @@ public class GamePalette: SKScene {
                 }
             }
         }
+    }
+    
+    public func nextMoveSuggestion(forColor colorA: RYBColor, and colorB: RYBColor) -> Bool{
+        var suggestionAvailable = false
+        
+        var firstDot: Dot!
+        var secondDot: Dot!
+        
+        for dot in self.children {
+            if (dot as! Dot).dotColor.red == colorA.red && (dot as! Dot).dotColor.yellow == colorA.yellow && (dot as! Dot).dotColor.blue == colorA.blue {
+                firstDot = dot as! Dot
+            }
+        }
+        
+        if let f = firstDot {
+            for dot in self.children {
+                if dot != f {
+                    if (dot as! Dot).dotColor.red == colorB.red && (dot as! Dot).dotColor.yellow == colorB.yellow && (dot as! Dot).dotColor.blue == colorB.blue {
+                        secondDot = dot as! Dot
+                        suggestionAvailable = true
+                    }
+                }
+            }
+        }
+        
+
+        if let d1 = firstDot {
+            if let d2 = secondDot {
+                self.animate(dot: d1, withAnimation: self.suggestionAnimation)
+                self.animate(dot: d2, withAnimation: self.suggestionAnimation)
+            }
+        }
+        
+        return suggestionAvailable
     }
  
     private func animate(dot: SKNode?, withAnimation animation: SKAction?) {

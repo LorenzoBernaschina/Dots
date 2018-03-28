@@ -27,7 +27,8 @@ public class RYBColor: ColorConverter {
         self.blue = blue
     }
     
-    /** This method converts from a RGB color to the instance's color system that calls it.
+    /**
+     Converts from the RGB color system to the RYB color system.
      
      - parameters:
      - color: The RGB color to be converted.
@@ -110,7 +111,7 @@ public class RYBColor: ColorConverter {
     }
  
     /**
-     This method converts from the instance's color system that calls it to a RGB color
+     Converts from the RYB color system to the RGB color system
      - returns: A new RGB color
      */
     public func toRGBColor() -> UIColor {
@@ -157,6 +158,12 @@ public class RYBColor: ColorConverter {
         return UIColor(red: red, green: green, blue: blue, alpha: 1)
     }
     
+    /**
+     Mixes two RYB colors together.
+     
+     - parameters:
+     - color: The color you want to mix
+     */
     public func mix(withColor color: RYBColor) {
         let r = self.red + color.red
         let y = self.yellow + color.yellow

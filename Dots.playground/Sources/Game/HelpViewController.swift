@@ -14,27 +14,27 @@ public class HelpViewController: UIViewController {
     
     override public func loadView() {
         //UIView
-        self.view = UIView(frame: CGRect(x: ViewObject.shared.gameView.x,
-                                         y: ViewObject.shared.gameView.y,
-                                         width: ViewObject.shared.gameView.width,
-                                         height: ViewObject.shared.gameView.height))
+        self.view = UIView(frame: CGRect(x: ConstantValues.shared.gameView.x,
+                                         y: ConstantValues.shared.gameView.y,
+                                         width: ConstantValues.shared.gameView.width,
+                                         height: ConstantValues.shared.gameView.height))
         
-        let background = UIImageView(frame: CGRect(x: ViewObject.shared.gameView.x,
-                                            y: ViewObject.shared.gameView.y,
-                                            width: ViewObject.shared.gameView.width,
-                                            height: ViewObject.shared.gameView.height))
+        let background = UIImageView(frame: CGRect(x: ConstantValues.shared.gameView.x,
+                                            y: ConstantValues.shared.gameView.y,
+                                            width: ConstantValues.shared.gameView.width,
+                                            height: ConstantValues.shared.gameView.height))
         background.image = UIImage(named: "HelpBackground.jpg")
         
         // Dismiss button
-        self.dismissButton.setTitle(ViewObject.shared.dismissButton.title, for: .normal)
+        self.dismissButton.setTitle(ConstantValues.shared.dismissButton.title, for: .normal)
         self.dismissButton.setTitleColor(.white, for: .normal)
-        self.dismissButton.frame = CGRect(x: ViewObject.shared.dismissButton.x,
-                                          y: ViewObject.shared.dismissButton.y,
-                                          width: ViewObject.shared.dismissButton.width,
-                                          height: ViewObject.shared.dismissButton.height)
-        self.dismissButton.layer.cornerRadius = ViewObject.shared.dismissButton.cornerRadius
+        self.dismissButton.frame = CGRect(x: ConstantValues.shared.dismissButton.x,
+                                          y: ConstantValues.shared.dismissButton.y,
+                                          width: ConstantValues.shared.dismissButton.width,
+                                          height: ConstantValues.shared.dismissButton.height)
+        self.dismissButton.layer.cornerRadius = ConstantValues.shared.dismissButton.cornerRadius
         self.dismissButton.backgroundColor = .black
-        self.dismissButton.titleLabel?.font = UIFont(name: ViewObject.shared.sanFranciscoFont.name, size: 20)
+        self.dismissButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 20)
         self.dismissButton.addTarget(self, action: #selector(HelpViewController.dismissViewController(sender:)), for: .touchUpInside)
         
         self.view.addSubview(background)

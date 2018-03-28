@@ -1,5 +1,7 @@
 import UIKit
 
+
+
 public struct View {
     public var x: CGFloat
     public var y: CGFloat
@@ -93,9 +95,9 @@ enum FontType {
     }
 }
 
-public class ViewObject {
+public class ConstantValues {
     
-    public static let shared = ViewObject()
+    public static let shared = ConstantValues()
     
     public let gameView = ViewType.Game.get()
     
