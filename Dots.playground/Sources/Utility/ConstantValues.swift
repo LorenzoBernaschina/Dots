@@ -1,7 +1,10 @@
+/**
+ This class is a singleton that provides the constant values across the whole app
+*/
+
 import UIKit
 
-
-
+//MARK: View
 public struct View {
     public var x: CGFloat
     public var y: CGFloat
@@ -32,6 +35,7 @@ enum ViewType {
     }
 }
 
+//MARK: Button
 public struct Button {
     public var title: String
     public var x: CGFloat
@@ -76,6 +80,7 @@ enum ButtonType {
     }
 }
 
+// MARK: Font
 public struct Font {
     public var name: String
     

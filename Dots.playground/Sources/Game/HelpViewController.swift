@@ -1,3 +1,9 @@
+/**
+ This view controller is used just to show a quick overview of the basic relationship between primary, secondary and tertiary colors.
+ It is a small help provided to the user for better understanding what kind of colors is convenient to mix in order to achieve the goal.
+ The user can consult it whenever he wants during the game.
+*/
+
 import UIKit
 
 public class HelpViewController: UIViewController {

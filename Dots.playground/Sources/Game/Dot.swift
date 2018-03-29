@@ -2,8 +2,9 @@ import SpriteKit
 import UIKit
 
 /**
- This class is used to render the colored circles
+  This class is used to render the colored circles
  */
+
 public class Dot: SKSpriteNode {
     
     private var radius: CGFloat

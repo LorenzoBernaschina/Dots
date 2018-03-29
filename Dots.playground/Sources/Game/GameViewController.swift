@@ -2,11 +2,18 @@ import UIKit
 import SpriteKit
 
 public enum GameStatus {
-    case Win
-    case Lose
+    case Won
+    case Lost
 }
 
 public protocol GameViewControllerDelegate: class {
+    /**
+     Called every time the game ends.
+     Use this method to check the outcome of the game and to provide a message to the user.
+     
+     - parameters:
+     - status: the state with which the game is finished. It can be .Won or .Lost
+    */
     func gameEnded(withStatus status: GameStatus)
 }
 
@@ -27,7 +34,7 @@ public class GameViewController: UIViewController {
     private let helpButton = UIButton(type: .custom)
     
     private var suggestionTimer: Timer?
-    private let suggestionTime: TimeInterval = 5.0
+    private let suggestionTime: TimeInterval = 10.0
     
     public weak var gameViewControllerDelegate: GameViewControllerDelegate?
     
@@ -208,17 +215,17 @@ extension GameViewController: GamePaletteDelegate {
             if (color.red == goalColor.red && color.yellow == goalColor.yellow && color.blue == goalColor.blue){
                 self.stopTimer()
                 self.dismiss(animated: true, completion: {
-                    self.gameViewControllerDelegate?.gameEnded(withStatus: .Win)
+                    self.gameViewControllerDelegate?.gameEnded(withStatus: .Won)
                 })
             }else if (self.palette!.children.count - 1 == 1) {
                 self.stopTimer()
                 self.dismiss(animated: true, completion: {
-                    self.gameViewControllerDelegate?.gameEnded(withStatus: .Lose)
+                    self.gameViewControllerDelegate?.gameEnded(withStatus: .Lost)
                 })
             }
         }
         
-        // if the suggestion timer is valid, this means that the user is still on the right path to get the solution
+        // check if the user is still on the right path to get the solution, then update the suggestionPalette and reset the timer to provide the next suggestion
         if (self.suggestionPalette.count > 1 && self.suggestionTimer!.isValid) {
             self.suggestionPalette[0].mix(withColor: self.suggestionPalette[1])
             if (color.red == self.suggestionPalette[0].red && color.yellow == self.suggestionPalette[0].yellow && color.blue == self.suggestionPalette[0].blue) {

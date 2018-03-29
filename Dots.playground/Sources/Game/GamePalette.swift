@@ -2,10 +2,17 @@ import SpriteKit
 
 public protocol GamePaletteDelegate: class {
     /**
-     This method is called every time the user mix two colors during the game combining two nodes together.
+     Called every time the user mixes two colors combining two dots together.
+     Use this method for any check or update on the game status after every move.
      
      - parameters:
-        - dot:
+     - dot: The covered SKNode during the drag and drop action. Use this parameter to check the updates performed on the covered dot, in particular its new color property containing the result of the mix.
+     
+     - Important:
+     During every move action there are two actors involved: a selected dot that is the first one selected by the user and dragged around the screen and a second one called covered dot.
+     The covered dot is the one where the user has dropped the selected one.
+     
+     Please note that after every move the first selected dot is removed from the scene and remains only the covered dot colored with the result of the mix between them.
     */
     func dotDidMove(withNewDot dot: SKNode)
 }
@@ -24,14 +31,14 @@ public class GamePalette: SKScene {
     private var touch: UITouch?
     
     // Stores the difference between the touch location and the center of the sprite
-    // This value is used for dragging from the selectd point inside the node instead of its anchor point
+    // This value is used for dragging exactly from the selectd point inside the node instead of its anchor point as happens by default
     private var offset: CGPoint?
     
     // To manage the selected dot
     private var selectedDot: SKNode?
     
-    // To manage the overlaid dot
-    private var overlaidDot: SKNode?
+    // To manage the covered dot
+    private var coveredDot: SKNode?
     
     
     // Dots animations
@@ -43,13 +50,13 @@ public class GamePalette: SKScene {
     private let deselectionFadeAlpha = SKAction.fadeIn(withDuration: 0.25)
     private var deselectionAnimation: SKAction?
     
-    private let overlayZoomIn = SKAction.scale(to: 1.3, duration: 0.25)
-    private let overlayFadeAlpha = SKAction.fadeAlpha(to: 0.6, duration: 0.25)
-    private var overlayAnimation: SKAction?
+    private let coverZoomIn = SKAction.scale(to: 1.3, duration: 0.25)
+    private let coverFadeAlpha = SKAction.fadeAlpha(to: 0.6, duration: 0.25)
+    private var coverAnimation: SKAction?
     
-    private let notOverlayZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
-    private let notOverlayFadeAlpha = SKAction.fadeIn(withDuration: 0.25)
-    private var notOverlayAnimation: SKAction?
+    private let uncoverZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
+    private let uncoverFadeAlpha = SKAction.fadeIn(withDuration: 0.25)
+    private var uncoverAnimation: SKAction?
     
     // Mix colors animations
     private let removingDotScale = SKAction.scale(to: 0.0, duration: 0.25)
@@ -74,18 +81,18 @@ public class GamePalette: SKScene {
     public weak var gamePaletteDelegate: GamePaletteDelegate?
     
     override public func didMove(to view: SKView) {
-        // manage animations
+        // animations setup
         self.selectionAnimation = SKAction.group([self.selectionZoomIn,
                                                   self.selectionFadeAlpha])
         
         self.deselectionAnimation = SKAction.group([self.deselectionZoomOut,
                                                     self.deselectionFadeAlpha])
         
-        self.overlayAnimation = SKAction.group([self.overlayZoomIn,
-                                                self.overlayFadeAlpha])
+        self.coverAnimation = SKAction.group([self.coverZoomIn,
+                                                self.coverFadeAlpha])
         
-        self.notOverlayAnimation = SKAction.group([self.notOverlayZoomOut,
-                                                   self.notOverlayFadeAlpha])
+        self.uncoverAnimation = SKAction.group([self.uncoverZoomOut,
+                                                   self.uncoverFadeAlpha])
         
         let removingDotAnimation = SKAction.group([self.removingDotScale,
                                                    self.removingDotFadeOut])
@@ -104,16 +111,14 @@ public class GamePalette: SKScene {
                                                       suggestionSecondAnimation])
     }
     
+    // MARK: Drag and drop events manager
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             
-            // get the touch location
             let location = touch.location(in: self)
             
-            // get the dot
             self.selectedDot = atPoint(location)
             
-            // check if the touch is inside a dot
             if self.selectedDot!.isKind(of: Dot.self){
                 
                 self.selectedDot!.run(self.selectionAnimation!)
@@ -142,14 +147,14 @@ public class GamePalette: SKScene {
                     
                     let dots = nodes(at: self.selectedDot!.position)
                     for dot in dots {
-                        if let overlaidDot = self.overlaidDot {
+                        if let coveredDot = self.coveredDot {
                             if dots.count == 1 {
-                                self.animate(dot: overlaidDot, withAnimation: self.notOverlayAnimation)
-                                self.overlaidDot = nil
+                                self.animate(dot: coveredDot, withAnimation: self.uncoverAnimation)
+                                self.coveredDot = nil
                             }
                         }else if dot != self.selectedDot {
-                            self.overlaidDot = dot
-                            self.animate(dot: self.overlaidDot, withAnimation: self.overlayAnimation)
+                            self.coveredDot = dot
+                            self.animate(dot: self.coveredDot, withAnimation: self.coverAnimation)
                         }
                     }
                 }
@@ -163,15 +168,16 @@ public class GamePalette: SKScene {
                 if touch as UITouch == self.touch {
                     
                     // The user has released a dot over another one, this means he wants to mix them
-                    if let overlaidDot = self.overlaidDot {
+                    if let coveredDot = self.coveredDot {
+                        
                         // #1 remove the selected dot
                         self.animate(dot: self.selectedDot, withAnimation: self.removeDotAnimation)
-                        // #2 set the new color of the overlaid dot
-                        (overlaidDot as! Dot).dotColor.mix(withColor: (self.selectedDot as! Dot).dotColor)
-                        // #3 animate the overlaid dot
-                        let newColor = (overlaidDot as! Dot).dotColor.toRGBColor()
                         
+                        // #2update the covered dot color
+                        (coveredDot as! Dot).dotColor.mix(withColor: (self.selectedDot as! Dot).dotColor)
                         
+                        // #3 animate the covered dot
+                        let newColor = (coveredDot as! Dot).dotColor.toRGBColor()
                         let colorizingDotAnimationColor = SKAction.colorize(with: newColor,
                                                                        colorBlendFactor: 1.0,
                                                                        duration: 0.4)
@@ -179,10 +185,10 @@ public class GamePalette: SKScene {
                         let colorizeDotAnimation = SKAction.group([self.colorizingDotAnimationScale!,
                                                                    colorizingDotAnimationColor,
                                                                    colorizingDotAnimationFadeIn])
-                        self.animate(dot: overlaidDot, withAnimation: colorizeDotAnimation)
+                        self.animate(dot: coveredDot, withAnimation: colorizeDotAnimation)
                         
-                        // delegate method
-                        self.gamePaletteDelegate?.dotDidMove(withNewDot: overlaidDot)
+                        // call delegate method when the move is performed
+                        self.gamePaletteDelegate?.dotDidMove(withNewDot: coveredDot)
                     }else {
                         self.selectedDot!.zPosition = 0.0
                         let moveToOriginalPosition = SKAction.move(to: (self.selectedDot as! Dot).originalPosition, duration: 0.25)
@@ -193,12 +199,23 @@ public class GamePalette: SKScene {
                     self.touch = nil
                     self.selectedDot = nil
                     self.offset = nil
-                    self.overlaidDot = nil
+                    self.coveredDot = nil
                 }
             }
         }
     }
     
+    /**
+     Checks if there are two dots available on the palette in order to provide the next mix suggestion to the user.
+     In case the two dots are found, it highlights them performing an animation.
+     
+     - parameters:
+     - colorA: the first color to look for presence in the palette
+     - colorB: the second color to look for presence in the palette
+     
+     - returns:
+     A boolean value indicating the check result: returns true if a suggestion is available, false otherwise.
+     */
     public func nextMoveSuggestion(forColor colorA: RYBColor, and colorB: RYBColor) -> Bool{
         var suggestionAvailable = false
         

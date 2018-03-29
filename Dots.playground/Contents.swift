@@ -182,9 +182,9 @@ extension WelcomeViewController: GameViewControllerDelegate {
         self.currentButtonPressed.titleLabel?.minimumScaleFactor = 0.5
         self.currentButtonPressed.titleLabel?.numberOfLines = 1
         switch status {
-        case .Win:
-            self.currentButtonPressed.setTitle("You win!", for: .normal)
-        case .Lose:
+        case .Won:
+            self.currentButtonPressed.setTitle("You won!", for: .normal)
+        case .Lost:
             self.currentButtonPressed.setTitle("Try again", for: .normal)
         }
     }
