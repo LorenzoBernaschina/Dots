@@ -1,6 +1,7 @@
 //: Playground - noun: a place where people can play
 
 import UIKit
+import AVFoundation
 import PlaygroundSupport
 
 class WelcomeViewController: UIViewController {
@@ -20,7 +21,20 @@ class WelcomeViewController: UIViewController {
     
     private let resetGameButton = UIButton(type: .custom)
     
+    private var soundtrack: AVAudioPlayer!
+    
     public init() {
+        let soundFilePath = Bundle.main.path(forResource: "Home", ofType: "mp3")
+        let soundFileURL = URL(fileURLWithPath: soundFilePath!)
+        do{
+            self.soundtrack = try AVAudioPlayer(contentsOf: soundFileURL)
+            self.soundtrack.volume = 0.6
+            self.soundtrack.numberOfLoops = -1 //Infinite Loop 
+            self.soundtrack.play()
+        } catch {
+            print("\(error)")
+        }
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -133,15 +147,15 @@ class WelcomeViewController: UIViewController {
         
         switch sender.tag {
         case 0:
-            gameViewController = GameViewController(colorPalette: self.easyGameColorPalette)
+            gameViewController = GameViewController(colorPalette: self.easyGameColorPalette, level: "Easy")
         case 1:
-            gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette)
+            gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette, level: "Medium")
         case 2:
-            gameViewController = GameViewController(colorPalette: self.hardGameColorPalette)
+            gameViewController = GameViewController(colorPalette: self.hardGameColorPalette, level: "Hard")
         default:
             break
             
-    }
+        }
         
         if let viewController = gameViewController {
             viewController.gameViewControllerDelegate = self
@@ -154,9 +168,12 @@ class WelcomeViewController: UIViewController {
             
             self.currentButtonPressed = sender
             
+            self.soundtrack.pause()
+            
             self.present(viewController, animated: true, completion: nil)
         }
     }
+
 }
 
 extension WelcomeViewController: UIViewControllerTransitioningDelegate {
@@ -177,6 +194,7 @@ extension WelcomeViewController: UIViewControllerTransitioningDelegate {
 }
 
 extension WelcomeViewController: GameViewControllerDelegate {
+    
     public func gameEnded(withStatus status: GameStatus) {
         self.currentButtonPressed.titleLabel?.adjustsFontSizeToFitWidth = true
         self.currentButtonPressed.titleLabel?.minimumScaleFactor = 0.5
@@ -186,7 +204,11 @@ extension WelcomeViewController: GameViewControllerDelegate {
             self.currentButtonPressed.setTitle("You won!", for: .normal)
         case .Lost:
             self.currentButtonPressed.setTitle("Try again", for: .normal)
+        case .Interrupted:
+            break
         }
+        
+        self.soundtrack.play()
     }
 }
 
@@ -198,7 +220,7 @@ extension UIView {
                        usingSpringWithDamping: damping,
                        initialSpringVelocity: initialVelocity,
                        options: .allowUserInteraction,
-                       animations: {[weak self] in self?.transform = .identity},
+                       animations: { [weak self] in self?.transform = .identity },
                        completion: nil)
     }
 }

@@ -1,9 +1,11 @@
 import UIKit
 import SpriteKit
+import AVFoundation
 
 public enum GameStatus {
     case Won
     case Lost
+    case Interrupted
 }
 
 public protocol GameViewControllerDelegate: class {
@@ -12,7 +14,7 @@ public protocol GameViewControllerDelegate: class {
      Use this method to check the outcome of the game and to provide a message to the user.
      
      - parameters:
-     - status: the state with which the game is finished. It can be .Won or .Lost
+     - status: the state with which the game is finished. It can be .Won, .Lost or .Interrupted
     */
     func gameEnded(withStatus status: GameStatus)
 }
@@ -36,9 +38,11 @@ public class GameViewController: UIViewController {
     private var suggestionTimer: Timer?
     private let suggestionTime: TimeInterval = 10.0
     
+    private var soundtrack: AVAudioPlayer!
+    
     public weak var gameViewControllerDelegate: GameViewControllerDelegate?
     
-    public init(colorPalette: [RYBColor]) {
+    public init(colorPalette: [RYBColor], level: String) {
         for i in 0 ..< colorPalette.count {
             let color = RYBColor(red: colorPalette[i].red, yellow: colorPalette[i].yellow, blue: colorPalette[i].blue)
             
@@ -53,6 +57,17 @@ public class GameViewController: UIViewController {
         
         self.palette = GamePalette(size: CGSize(width: ConstantValues.shared.paletteView.width,
                                                 height: ConstantValues.shared.paletteView.height))
+        
+        let soundFilePath = Bundle.main.path(forResource: level, ofType: "mp3")
+        let soundFileURL = URL(fileURLWithPath: soundFilePath!)
+        do{
+            self.soundtrack = try AVAudioPlayer(contentsOf: soundFileURL)
+            self.soundtrack.volume = 0.6
+            self.soundtrack.numberOfLoops = -1 //Infinite Loop 
+            self.soundtrack.play()
+        } catch {
+            print("\(error)")
+        }
 
         super.init(nibName: nil, bundle: nil)
     
@@ -127,7 +142,7 @@ public class GameViewController: UIViewController {
     
     @objc func showSuggestion(sender: Timer) {
         if (self.suggestionPalette.count > 1) {
-            // if the user is not on the right path, don't provide suggestions anymore
+            // if the user is not on the right track, don't provide suggestions anymore
             if !self.palette!.nextMoveSuggestion(forColor: self.suggestionPalette[0], and: self.suggestionPalette[1]) {
                 self.stopTimer()
             }
@@ -181,9 +196,12 @@ public class GameViewController: UIViewController {
     
     @objc func dismissViewController(sender: UIButton) {
         self.stopTimer()
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: {
+            self.soundtrack.stop()
+            self.gameViewControllerDelegate?.gameEnded(withStatus: .Interrupted)
+        })
     }
- 
+    
 }
 
 extension GameViewController: UIViewControllerTransitioningDelegate {
@@ -215,17 +233,19 @@ extension GameViewController: GamePaletteDelegate {
             if (color.red == goalColor.red && color.yellow == goalColor.yellow && color.blue == goalColor.blue){
                 self.stopTimer()
                 self.dismiss(animated: true, completion: {
+                    self.soundtrack.stop()
                     self.gameViewControllerDelegate?.gameEnded(withStatus: .Won)
                 })
             }else if (self.palette!.children.count - 1 == 1) {
                 self.stopTimer()
                 self.dismiss(animated: true, completion: {
+                    self.soundtrack.stop()
                     self.gameViewControllerDelegate?.gameEnded(withStatus: .Lost)
                 })
             }
         }
         
-        // check if the user is still on the right path to get the solution, then update the suggestionPalette and reset the timer to provide the next suggestion
+        // check if the user is still on the right track to get the solution, then update the suggestionPalette and reset the timer to provide the next suggestion
         if (self.suggestionPalette.count > 1 && self.suggestionTimer!.isValid) {
             self.suggestionPalette[0].mix(withColor: self.suggestionPalette[1])
             if (color.red == self.suggestionPalette[0].red && color.yellow == self.suggestionPalette[0].yellow && color.blue == self.suggestionPalette[0].blue) {

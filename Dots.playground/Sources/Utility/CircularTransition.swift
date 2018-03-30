@@ -4,8 +4,10 @@
  The transition starts and propagates from the center of the button pressed when the view is presented.
  It returns to the same point when the view is dismissed.
  
- Please note: this class is the result of a personal rearrangement of an open source class you can find at the following link:
+ Please note: this class is the result of a personal adjustment of an open source class you can find at the following link
  https://github.com/brianadvent/CircularTransition/blob/master/CircularTransition/CircularTransition.swift
+ 
+ 
 */
 
 import UIKit
