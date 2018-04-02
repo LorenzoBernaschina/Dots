@@ -1,4 +1,4 @@
-//: Playground - noun: a place where people can play
+//: ![](Cover.pdf)
 
 import UIKit
 import AVFoundation
@@ -6,7 +6,7 @@ import PlaygroundSupport
 
 class WelcomeViewController: UIViewController {
     
-    private let circularTransition = CircularTransition(withDuration: 0.4)
+    private let bubbleTransition = BubbleTransition(withDuration: 0.4)
     private var currentButtonPressed = UIButton()
     
     private var easyGameColorPalette = [RYBColor]()
@@ -24,7 +24,8 @@ class WelcomeViewController: UIViewController {
     private var soundtrack: AVAudioPlayer!
     
     public init() {
-        let soundFilePath = Bundle.main.path(forResource: "Home", ofType: "mp3")
+        let soundFilePath = Bundle.main.path(forResource: ConstantValues.shared.welcomeSoundtrack.name,
+                                             ofType: ConstantValues.shared.welcomeSoundtrack.type)
         let soundFileURL = URL(fileURLWithPath: soundFilePath!)
         do{
             self.soundtrack = try AVAudioPlayer(contentsOf: soundFileURL)
@@ -51,11 +52,11 @@ class WelcomeViewController: UIViewController {
                                          width: ConstantValues.shared.gameView.width,
                                          height: ConstantValues.shared.gameView.height))
         
-        let background = UIImageView(frame: CGRect(x: ConstantValues.shared.gameView.x,
-                                                   y: ConstantValues.shared.gameView.y,
-                                                   width: ConstantValues.shared.gameView.width,
-                                                   height: ConstantValues.shared.gameView.height))
-        background.image = UIImage(named: "HomeBackground.jpg")
+        let background = UIImageView(frame: CGRect(x: ConstantValues.shared.welcomeBackgroundImage.x,
+                                                   y: ConstantValues.shared.welcomeBackgroundImage.y,
+                                                   width: ConstantValues.shared.welcomeBackgroundImage.width,
+                                                   height: ConstantValues.shared.welcomeBackgroundImage.height))
+        background.image = UIImage(named: ConstantValues.shared.welcomeBackgroundImage.name)
         
         self.easyGameButton.setTitle(ConstantValues.shared.easyButton.title, for: .normal)
         self.easyGameButton.tag = 0
@@ -147,11 +148,11 @@ class WelcomeViewController: UIViewController {
         
         switch sender.tag {
         case 0:
-            gameViewController = GameViewController(colorPalette: self.easyGameColorPalette, level: "Easy")
+            gameViewController = GameViewController(colorPalette: self.easyGameColorPalette, level: .Easy)
         case 1:
-            gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette, level: "Medium")
+            gameViewController = GameViewController(colorPalette: self.mediumGameColorPalette, level: .Medium)
         case 2:
-            gameViewController = GameViewController(colorPalette: self.hardGameColorPalette, level: "Hard")
+            gameViewController = GameViewController(colorPalette: self.hardGameColorPalette, level: .Hard)
         default:
             break
             
@@ -162,9 +163,9 @@ class WelcomeViewController: UIViewController {
             viewController.transitioningDelegate = self
             viewController.modalPresentationStyle = .custom
             
-            self.circularTransition.transitionMode = .present
-            self.circularTransition.transitionStartingPoint = sender.center
-            self.circularTransition.transitionColor = sender.backgroundColor!
+            self.bubbleTransition.transitionMode = .present
+            self.bubbleTransition.transitionStartingPoint = sender.center
+            self.bubbleTransition.transitionColor = sender.backgroundColor!
             
             self.currentButtonPressed = sender
             
@@ -179,17 +180,17 @@ class WelcomeViewController: UIViewController {
 extension WelcomeViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        return self.circularTransition
+        return self.bubbleTransition
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.circularTransition.transitionMode = .dismiss
-        self.circularTransition.transitionStartingPoint = self.currentButtonPressed.center
-        self.circularTransition.transitionColor = self.currentButtonPressed.backgroundColor!
+        self.bubbleTransition.transitionMode = .dismiss
+        self.bubbleTransition.transitionStartingPoint = self.currentButtonPressed.center
+        self.bubbleTransition.transitionColor = self.currentButtonPressed.backgroundColor!
         
         self.currentButtonPressed.jumpAnimation(withDuration: 2.0, damping: 0.2, initialVelocity: 4.0)
         
-        return self.circularTransition
+        return self.bubbleTransition
     }
 }
 
@@ -225,6 +226,5 @@ extension UIView {
     }
 }
 
-//Playground setup
 let welcomeViewController = WelcomeViewController()
 PlaygroundPage.current.liveView = welcomeViewController.view

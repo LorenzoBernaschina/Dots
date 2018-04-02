@@ -33,7 +33,7 @@ public class RYBColor: ColorConverter {
      - parameters:
      - color: The RGB color to be converted.
      
-     - throws: An error of type 'RGBColorError' in case a color component has an invalid value or is nil
+     - throws: An error of type 'RGBColorError' if a color component has an invalid value or is nil
      
      */
     public func fromRGBColor(color: UIColor) throws {
@@ -159,7 +159,7 @@ public class RYBColor: ColorConverter {
     }
     
     /**
-     This method mix two RYB colors together and updates the property values of the instance that calls it.
+     This method mixes two RYB colors together and updates the color attributes values of the instance that calls it.
      
      - parameters:
      - color: The other color you want to mix

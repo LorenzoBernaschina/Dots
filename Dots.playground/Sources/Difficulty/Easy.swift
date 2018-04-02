@@ -13,13 +13,13 @@ public class Easy: Difficulty {
     
     /**
      Manages the logic to set a new game.
-     The algorithm creates an initial palette of random colors, then mix an arbitrary amount of them to gain a final goal color.
+     The algorithm creates an initial palette of random colors, then mixes an arbitrary amount of them to gain a final goal color.
      
      - returns:
-     An array of RYBColor containing in the first 9 position the original color palette that will be displayed, followed by the colors selected during the mix process. Use this second part of the array to provide suggestions to the user in case he needs help. The last element of the array is always the final goal color that the user has to reach during the game.
+     An array of RYBColor containing in the first 9 positions the original color palette that will be displayed, followed by the colors selected during the mix process. Use this second part of the array to provide suggestions to the user in case he needs help. The last element of the array is always the final goal color that the user has to reach during the game.
      */
     public func setGame() -> [RYBColor] {
-        // #1 Generate colors randomly
+        // #1 Generate colors randomly to set a colors palette
         repeat {
             self.colorsPalette.removeAll()
             for _ in 0 ..< 9 {

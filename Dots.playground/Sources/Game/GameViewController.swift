@@ -2,6 +2,12 @@ import UIKit
 import SpriteKit
 import AVFoundation
 
+public enum GameLevel {
+    case Easy
+    case Medium
+    case Hard
+}
+
 public enum GameStatus {
     case Won
     case Lost
@@ -29,7 +35,7 @@ public class GameViewController: UIViewController {
     
     private var palette: GamePalette?
     
-    private let circularTransition = CircularTransition(withDuration: 0.4)
+    private let bubbleTransition = BubbleTransition(withDuration: 0.4)
     
     private let dismissButton = UIButton(type: .custom)
     
@@ -42,7 +48,7 @@ public class GameViewController: UIViewController {
     
     public weak var gameViewControllerDelegate: GameViewControllerDelegate?
     
-    public init(colorPalette: [RYBColor], level: String) {
+    public init(colorPalette: [RYBColor], level: GameLevel) {
         for i in 0 ..< colorPalette.count {
             let color = RYBColor(red: colorPalette[i].red, yellow: colorPalette[i].yellow, blue: colorPalette[i].blue)
             
@@ -58,13 +64,26 @@ public class GameViewController: UIViewController {
         self.palette = GamePalette(size: CGSize(width: ConstantValues.shared.paletteView.width,
                                                 height: ConstantValues.shared.paletteView.height))
         
-        let soundFilePath = Bundle.main.path(forResource: level, ofType: "mp3")
-        let soundFileURL = URL(fileURLWithPath: soundFilePath!)
+        let soundFileURL: URL!
+        switch level {
+        case .Easy:
+            soundFileURL = URL(fileURLWithPath: Bundle.main.path(forResource: ConstantValues.shared.easySoundtrack.name,
+                                                                 ofType: ConstantValues.shared.easySoundtrack.type)!)
+        case .Medium:
+            soundFileURL = URL(fileURLWithPath: Bundle.main.path(forResource: ConstantValues.shared.mediumSoundtrack.name,
+                                                                 ofType: ConstantValues.shared.mediumSoundtrack.type)!)
+        case .Hard:
+            soundFileURL = URL(fileURLWithPath: Bundle.main.path(forResource: ConstantValues.shared.hardSoundtrack.name,
+                                                                 ofType: ConstantValues.shared.hardSoundtrack.type)!)
+        }
+        
         do{
-            self.soundtrack = try AVAudioPlayer(contentsOf: soundFileURL)
-            self.soundtrack.volume = 0.6
-            self.soundtrack.numberOfLoops = -1 //Infinite Loop 
-            self.soundtrack.play()
+            if let soundtrack = soundFileURL {
+                self.soundtrack = try AVAudioPlayer(contentsOf: soundtrack)
+                self.soundtrack.volume = 0.6
+                self.soundtrack.numberOfLoops = -1 //Infinite Loop 
+                self.soundtrack.play()
+            }
         } catch {
             print("\(error)")
         }
@@ -207,20 +226,20 @@ public class GameViewController: UIViewController {
 extension GameViewController: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        self.circularTransition.transitionMode = .present
-        self.circularTransition.transitionStartingPoint = self.helpButton.center
-        self.circularTransition.transitionColor = self.helpButton.backgroundColor!
+        self.bubbleTransition.transitionMode = .present
+        self.bubbleTransition.transitionStartingPoint = self.helpButton.center
+        self.bubbleTransition.transitionColor = self.helpButton.backgroundColor!
         
-        return self.circularTransition
+        return self.bubbleTransition
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
-        self.circularTransition.transitionMode = .dismiss
-        self.circularTransition.transitionStartingPoint = self.helpButton.center
-        self.circularTransition.transitionColor = self.helpButton.backgroundColor!
+        self.bubbleTransition.transitionMode = .dismiss
+        self.bubbleTransition.transitionStartingPoint = self.helpButton.center
+        self.bubbleTransition.transitionColor = self.helpButton.backgroundColor!
         
-        return self.circularTransition
+        return self.bubbleTransition
     }
 }
 

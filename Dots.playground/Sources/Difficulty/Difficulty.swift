@@ -8,13 +8,13 @@ public protocol Difficulty {
 extension Difficulty {
     
     /**
-     Mix the palette colors randomly to obtain a goal color that the user has to reach during the game.
+     Mixes the palette colors randomly to obtain a goal color that the user has to reach during the game.
      - parameters:
         - palette: an array of RYB colors that contains the initial color palette for the game
         - mix: the number of mix to be done before obtaining a goal color
      
      - returns:
-        - An array of RYB colors that contains in the first 9 positions the original color palette passed as parameter, followed by every intermediate color selected during the mixing process ordered chronologically. Use the intermediate colors to help the user choosing the right ones after an arbitrary amount of inactivity time during the game.
+        - An array of RYB colors that contains in the first 9 positions the original color palette passed as parameter, followed by every color selected during the mixing process ordered chronologically. Use this second part of the array to help the user choosing the right combinations after an arbitrary amount of inactivity time during the game.
      
         The last element of the array is the goal color that the user has to reach during the game
     */

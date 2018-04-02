@@ -80,6 +80,68 @@ enum ButtonType {
     }
 }
 
+//MARK: Image
+public struct Image {
+    public var x: CGFloat
+    public var y: CGFloat
+    public var width: CGFloat
+    public var height: CGFloat
+    public var name: String
+    
+    init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, name: String) {
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.name = name
+    }
+}
+
+enum ImageType {
+    case Welcome
+    case Help
+    
+    func get() -> Image {
+        switch self {
+        case .Welcome:
+            return Image(x: 0, y: 0, width: 600, height: 600, name: "WelcomeBackground.jpg")
+        case .Help:
+            return Image(x: 0, y: 0, width: 600, height: 600, name: "HelpBackground.jpg")
+        }
+    }
+}
+
+// MARK: Sound
+public struct Sound {
+    public var name: String
+    public var type: String
+    
+    init(name: String, type: String) {
+        self.name = name
+        self.type = type
+    }
+}
+
+enum SoundType {
+    case Welcome
+    case Easy
+    case Medium
+    case Hard
+    
+    func get() -> Sound {
+        switch self {
+        case .Welcome:
+            return Sound(name: "Welcome", type: "mp3")
+        case .Easy:
+            return Sound(name: "Easy", type: "mp3")
+        case .Medium:
+            return Sound(name: "Medium", type: "mp3")
+        case .Hard:
+            return Sound(name: "Hard", type: "mp3")
+        }
+    }
+}
+
 // MARK: Font
 public struct Font {
     public var name: String
@@ -119,6 +181,18 @@ public class ConstantValues {
     public let dismissButton = ButtonType.Dismiss.get()
     
     public let helpButton = ButtonType.Help.get()
+    
+    public let welcomeBackgroundImage = ImageType.Welcome.get()
+    
+    public let helpBackgroundImage = ImageType.Help.get()
+    
+    public let welcomeSoundtrack = SoundType.Welcome.get()
+    
+    public let easySoundtrack = SoundType.Easy.get()
+    
+    public let mediumSoundtrack = SoundType.Medium.get()
+    
+    public let hardSoundtrack = SoundType.Hard.get()
     
     public let sanFranciscoFont = FontType.SanFrancisco.get()
 }

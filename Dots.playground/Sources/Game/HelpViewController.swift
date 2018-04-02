@@ -25,11 +25,11 @@ public class HelpViewController: UIViewController {
                                          width: ConstantValues.shared.gameView.width,
                                          height: ConstantValues.shared.gameView.height))
         
-        let background = UIImageView(frame: CGRect(x: ConstantValues.shared.gameView.x,
-                                            y: ConstantValues.shared.gameView.y,
-                                            width: ConstantValues.shared.gameView.width,
-                                            height: ConstantValues.shared.gameView.height))
-        background.image = UIImage(named: "HelpBackground.jpg")
+        let background = UIImageView(frame: CGRect(x: ConstantValues.shared.helpBackgroundImage.x,
+                                            y: ConstantValues.shared.helpBackgroundImage.y,
+                                            width: ConstantValues.shared.helpBackgroundImage.width,
+                                            height: ConstantValues.shared.helpBackgroundImage.height))
+        background.image = UIImage(named: ConstantValues.shared.helpBackgroundImage.name)
         
         // Dismiss button
         self.dismissButton.setTitle(ConstantValues.shared.dismissButton.title, for: .normal)

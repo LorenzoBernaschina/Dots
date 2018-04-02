@@ -2,8 +2,8 @@ import SpriteKit
 import UIKit
 
 /**
-  This class is used to render the colored circles
- */
+  This class is used to render the colored circles of the palette
+*/
 
 public class Dot: SKSpriteNode {
     

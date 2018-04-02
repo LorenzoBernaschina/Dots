@@ -6,10 +6,10 @@ public protocol GamePaletteDelegate: class {
      Use this method for any check or update on the game status after every move.
      
      - parameters:
-     - dot: The covered SKNode during the drag and drop action. Use this parameter to check the updates performed on the covered dot, in particular its new color property containing the result of the mix.
+     - dot: The covered SKNode during the drag and drop action. Use this parameter to check the updates performed on the covered dot, in particular its color property containing the result of the mix.
      
      - Important:
-     During every move action there are two actors involved: a selected dot that is the first one selected by the user and dragged around the screen and a second one called covered dot.
+     During every move action there are two actors involved: a 'selected dot' that is the first one selected by the user and dragged around the screen and a second one called 'covered dot'.
      The covered dot is the one where the user has dropped the selected one.
      
      Please note that after every move the first selected dot is removed from the scene and remains only the covered dot colored with the result of the mix between them.
@@ -31,7 +31,7 @@ public class GamePalette: SKScene {
     private var touch: UITouch?
     
     // Stores the difference between the touch location and the center of the sprite
-    // This value is used for dragging exactly from the selectd point inside the node instead of its anchor point as happens by default
+    // This value is used for dragging exactly from the selected point inside the node instead of its anchor point as happens by default
     private var offset: CGPoint?
     
     // To manage the selected dot
@@ -72,7 +72,6 @@ public class GamePalette: SKScene {
     // Suggestion animation
     private let suggestionZoomIn = SKAction.scale(to: 1.2, duration: 0.25)
     private let suggestionFadeAlphaOut = SKAction.fadeAlpha(to: 0.8, duration: 0.25)
-    //private let suggestionWait = SKAction.wait(forDuration: 0.25)
     private let suggestionFadeAlphaIn = SKAction.fadeIn(withDuration: 0.25)
     private let suggestionZoomOut = SKAction.scale(to: 1.0, duration: 0.25)
     private var suggestionAnimation: SKAction?
@@ -167,13 +166,13 @@ public class GamePalette: SKScene {
             if self.touch != nil {
                 if touch as UITouch == self.touch {
                     
-                    // The user has released a dot over another one, this means he wants to mix them
+                    // If the user has released a dot over another one, this means he wants to mix them
                     if let coveredDot = self.coveredDot {
                         
                         // #1 remove the selected dot
                         self.animate(dot: self.selectedDot, withAnimation: self.removeDotAnimation)
                         
-                        // #2update the covered dot color
+                        // #2 update the covered dot color
                         (coveredDot as! Dot).dotColor.mix(withColor: (self.selectedDot as! Dot).dotColor)
                         
                         // #3 animate the covered dot
