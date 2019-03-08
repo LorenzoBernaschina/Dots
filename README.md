@@ -1,1 +1,2 @@
-# WWDC18
+# Dots
+![Cover image](https://github.com/LorenzoBernaschina/Dots/blob/master/Cover.png)
