@@ -114,7 +114,7 @@ public class GameViewController: UIViewController {
                                       height: ConstantValues.shared.dismissButton.height)
         self.dismissButton.layer.cornerRadius = ConstantValues.shared.dismissButton.cornerRadius
         self.dismissButton.backgroundColor = .white
-        self.dismissButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 20)
+        self.dismissButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
         self.dismissButton.addTarget(self, action: #selector(GameViewController.dismissViewController(sender:)), for: .touchUpInside)
         
         // Help button
@@ -126,7 +126,7 @@ public class GameViewController: UIViewController {
                                      height: ConstantValues.shared.helpButton.height)
         self.helpButton.layer.cornerRadius = ConstantValues.shared.helpButton.cornerRadius
         self.helpButton.backgroundColor = .white
-        self.helpButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 20)
+        self.helpButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
         self.helpButton.addTarget(self, action: #selector(GameViewController.showHelp(sender:)), for: .touchUpInside)
         
         

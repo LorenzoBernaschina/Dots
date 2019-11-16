@@ -40,7 +40,7 @@ public class HelpViewController: UIViewController {
                                           height: ConstantValues.shared.dismissButton.height)
         self.dismissButton.layer.cornerRadius = ConstantValues.shared.dismissButton.cornerRadius
         self.dismissButton.backgroundColor = .black
-        self.dismissButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 20)
+        self.dismissButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
         self.dismissButton.addTarget(self, action: #selector(HelpViewController.dismissViewController(sender:)), for: .touchUpInside)
         
         self.view.addSubview(background)

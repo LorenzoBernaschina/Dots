@@ -142,26 +142,6 @@ enum SoundType {
     }
 }
 
-// MARK: Font
-public struct Font {
-    public var name: String
-    
-    init(name: String) {
-        self.name = name
-    }
-}
-
-enum FontType {
-    case SanFrancisco
-    
-    func get() -> Font {
-        switch self {
-        case .SanFrancisco:
-            return Font(name: ".SFUIText-Bold")
-        }
-    }
-}
-
 public class ConstantValues {
     
     public static let shared = ConstantValues()
@@ -194,6 +174,5 @@ public class ConstantValues {
     
     public let hardSoundtrack = SoundType.Hard.get()
     
-    public let sanFranciscoFont = FontType.SanFrancisco.get()
 }
 

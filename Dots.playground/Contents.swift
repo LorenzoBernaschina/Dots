@@ -67,7 +67,7 @@ class WelcomeViewController: UIViewController {
         self.easyGameButton.titleLabel?.textAlignment = .center
         self.easyGameButton.layer.cornerRadius = ConstantValues.shared.easyButton.cornerRadius
         self.easyGameButton.backgroundColor = (self.easyGameColorPalette.last)?.toRGBColor()
-        self.easyGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 50)
+        self.easyGameButton.titleLabel?.font = UIFont.systemFont(ofSize: 50, weight: UIFont.Weight.bold)
         self.easyGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         self.easyGameButton.jumpAnimation(withDuration: 2.0, damping: 0.4, initialVelocity: 4.0)
         
@@ -81,7 +81,7 @@ class WelcomeViewController: UIViewController {
         self.mediumGameButton.titleLabel?.textAlignment = .center
         self.mediumGameButton.layer.cornerRadius = ConstantValues.shared.mediumButton.cornerRadius
         self.mediumGameButton.backgroundColor = (self.mediumGameColorPalette.last)?.toRGBColor()
-        self.mediumGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 30)
+        self.mediumGameButton.titleLabel?.font = UIFont.systemFont(ofSize: 30, weight: UIFont.Weight.bold)
         self.mediumGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         self.mediumGameButton.jumpAnimation(withDuration: 2.0, damping: 0.3, initialVelocity: 4.0)
         
@@ -95,7 +95,7 @@ class WelcomeViewController: UIViewController {
         self.hardGameButton.titleLabel?.textAlignment = .center
         self.hardGameButton.layer.cornerRadius = ConstantValues.shared.hardButton.cornerRadius
         self.hardGameButton.backgroundColor = (self.hardGameColorPalette.last)?.toRGBColor()
-        self.hardGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 25)
+        self.hardGameButton.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
         self.hardGameButton.addTarget(self, action: #selector(WelcomeViewController.buttonPressed(sender:)), for: .touchUpInside)
         self.hardGameButton.jumpAnimation(withDuration: 2.0, damping: 0.2, initialVelocity: 4.0)
         
@@ -107,7 +107,7 @@ class WelcomeViewController: UIViewController {
                                             height: ConstantValues.shared.resetButton.height)
         self.resetGameButton.layer.cornerRadius = ConstantValues.shared.resetButton.cornerRadius
         self.resetGameButton.backgroundColor = .black
-        self.resetGameButton.titleLabel?.font = UIFont(name: ConstantValues.shared.sanFranciscoFont.name, size: 25)
+        self.resetGameButton.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
         self.resetGameButton.addTarget(self, action: #selector(WelcomeViewController.resetGame(sender:)), for: .touchUpInside)
         self.resetGameButton.jumpAnimation(withDuration: 2.0, damping: 0.2, initialVelocity: 4.0)
         
