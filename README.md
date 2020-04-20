@@ -1,14 +1,12 @@
 # Dots
-![Cover image](https://github.com/LorenzoBernaschina/Dots/blob/master/Cover.png)
+![Cover image](https://github.com/ittaboba/Dots/blob/master/Cover.jpg)
 
 ## Overview
-“Dots”, is a puzzle game designed to be used at any age but especially to develop kids skills, within a simple rule: you have to mix the colored Dots properly in order to obtain the background color.
+“Dots”, is a game based on color theory: the player must mix some of the 9 colored dots to get the background color.
 
-## Educational proposition
-The aim is to get people used to the color theory: an important skill to improve creativity and sense of beauty.
-Color theory is the “arithmetic” of art: as for being a scientist you have to know the four basic operations, to be a designer or artist you must know the fundamental relationships among colors.
-Our educational system is traditionally more focused on the mathematical and logical thinking, however, I think that creativity and the sense of perception should be taught with the same attention.
-This is why I would like to involve people through the game, making them learn in a more simple and fun way.
+Read full story [here](https://ittaboba.com/article/5e598c062709b8142b01147d)
+
+Video [here](https://www.youtube.com/watch?v=aUtvSrG0mUc)
 
 ## Instructions for playing
 When you launch the game, three different buttons will appear on the screen.
@@ -20,10 +18,5 @@ Since some level can be challenging, you can find help by tapping the ‘?’ at
 Moreover, if you are still on the right track to get the solution, after 10 seconds of inactivity the game provides a suggestion highlighting two Dots.
 You win the game when the mix you do produces the background color.
 
-## Technical accomplishments
-I have used SpriteKit to manage animations, shapes and colors: for example, if you drag a Dot around the screen, you can see a sort of bubble effect on the Dots below.
-I have readjusted an open source class to make the transitions between the screens smoother.
-
-The software has been developed to easily support different color systems in the future.
-
-The background musics are original and have been specially composed by my brother Leonardo using LogicPro.
+## Technical requirements
+The game was made in Swift Playground using Xcode 9.2
